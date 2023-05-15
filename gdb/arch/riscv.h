@@ -41,6 +41,12 @@ struct riscv_gdbarch_features
      uninitialised.  */
   int xlen = 0;
 
+  /* The size of the pointer_size in bytes.  This is either 4 (ILP32), 8
+     (LP64).  No other value is valid.  Initialise to the
+     invalid 0 value so we can spot if one of these is used
+     uninitialised.  */
+  int abi_xlen = 0;
+
   /* The size of the f-registers in bytes.  This is either 4 (RV32), 8
      (RV64), or 16 (RV128).  This can also hold the value 0 to indicate
      that there are no f-registers.  No other value is valid.  */
@@ -68,6 +74,7 @@ struct riscv_gdbarch_features
   bool operator== (const struct riscv_gdbarch_features &rhs) const
   {
     return (xlen == rhs.xlen && flen == rhs.flen
+	    && abi_xlen == rhs.abi_xlen
 	    && embedded == rhs.embedded && vlen == rhs.vlen
 	    && has_fflags_reg == rhs.has_fflags_reg
 	    && has_frm_reg == rhs.has_frm_reg
@@ -88,8 +95,9 @@ struct riscv_gdbarch_features
 		       | (has_frm_reg ? 1 : 0) << 12
 		       | (has_fcsr_reg ? 1 : 0) << 13
 		       | (xlen & 0x1f) << 5
+		       | (abi_xlen & 0x1f) << 14
 		       | (flen & 0x1f) << 0
-		       | (vlen & 0xfff) << 14);
+		       | (vlen & 0xfff) << 19);
     return val;
   }
 };
