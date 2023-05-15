@@ -124,6 +124,9 @@ END_RELOC_NUMBERS (R_RISCV_max)
 /* File uses the TSO model. */
 #define EF_RISCV_TSO 0x0010
 
+/* File uses the X32 model. */
+#define EF_RISCV_X32 0x0020
+
 /* Additional section types.  */
 #define SHT_RISCV_ATTRIBUTES 0x70000003 /* Section holds attributes.  */
 

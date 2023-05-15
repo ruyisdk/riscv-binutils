@@ -4119,6 +4119,9 @@ get_machine_flags (Filedata * filedata, unsigned e_flags, unsigned e_machine)
 	  if (e_flags & EF_RISCV_TSO)
 	    strcat (buf, ", TSO");
 
+	  if (e_flags & EF_RISCV_X32)
+	    strcat (buf, ", X32");
+
 	  switch (e_flags & EF_RISCV_FLOAT_ABI)
 	    {
 	    case EF_RISCV_FLOAT_ABI_SOFT:
