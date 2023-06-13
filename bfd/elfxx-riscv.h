@@ -77,6 +77,9 @@ typedef struct
   bool check_unknown_prefixed_ext;
 } riscv_parse_subset_t;
 
+extern int
+riscv_get_base_spimm (insn_t, riscv_parse_subset_t *);
+
 extern bool
 riscv_parse_subset (riscv_parse_subset_t *,
 		    const char *);
