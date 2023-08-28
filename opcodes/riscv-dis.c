@@ -409,7 +409,28 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  print (info->stream, "%d", rs1);
 	  break;
 
+  case 'W': /* Various operands.  */
+	  {
+	    switch (*++d)
+	      {
+	      case 'i':
+		switch (*++d)
+		  {
+		  case 'f':
+		    print (info->stream, "%d", (int) EXTRACT_STYPE_IMM (l));
+		    break;
+		  default:
+		    goto undefined_modifier;
+		  }
+		  break;
+	      default:
+		goto undefined_modifier;
+	      }
+	  }
+	  break;
+
 	default:
+	undefined_modifier:
 	  /* xgettext:c-format */
 	  print (info->stream, _("# internal error, undefined modifier (%c)"),
 		 *d);

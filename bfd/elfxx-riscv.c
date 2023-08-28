@@ -1158,7 +1158,10 @@ riscv_ext_dont_care_version (const char *subset)
 {
   if (strcmp (subset, "g") == 0
       || strcmp (subset, "zicsr") == 0
-      || strcmp (subset, "zifencei") == 0)
+      || strcmp (subset, "zifencei") == 0
+      || strcmp (subset, "zicbop") == 0
+      || strcmp (subset, "zicbom") == 0
+      || strcmp (subset, "zicboz") == 0)
     return TRUE;
   return FALSE;
 }
@@ -1597,7 +1600,7 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
 
 static const char * const riscv_std_z_ext_strtab[] =
 {
-  "zicsr", "zifencei", "zihintpause", "zba", "zbb", "zbc", NULL
+  "zicsr", "zifencei", "zihintpause", "zba", "zbb", "zbc", "zicbop", "zicbom", "zicboz", NULL
 };
 
 static const char * const riscv_std_s_ext_strtab[] =

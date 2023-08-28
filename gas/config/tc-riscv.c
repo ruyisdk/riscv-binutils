@@ -252,6 +252,12 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
       return riscv_subset_supports ("zifencei");
     case INSN_CLASS_ZIHINTPAUSE:
       return riscv_subset_supports ("zihintpause");
+    case INSN_CLASS_ZICBOP:
+      return riscv_subset_supports ("zicbop");
+    case INSN_CLASS_ZICBOM:
+      return riscv_subset_supports ("zicbom");
+    case INSN_CLASS_ZICBOZ:
+      return riscv_subset_supports ("zicboz");
 
     case INSN_CLASS_ZBA:
       return riscv_subset_supports ("zba");
@@ -1039,7 +1045,23 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	     return FALSE;
 	  }
 	break;
-      default:
+      case 'W':  /* Various operands.  */
+  switch (c = *p++)
+    {
+      case 'i':
+        switch (c = *p++)
+        {
+          case 'f': used_bits |= ENCODE_STYPE_IMM(-1U);break;
+          default:
+            goto undefined_modifier;
+        }
+        break;
+    default:
+      goto undefined_modifier;
+    }
+  break;
+default:
+undefined_modifier:
 	as_bad (_("internal: bad RISC-V opcode "
 		  "(unknown operand type `%c'): %s %s"),
 		c, opc->name, opc->args);
@@ -2619,8 +2641,41 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      s = expr_end;
 	      imm_expr->X_op = O_absent;
 	      continue;
+      
+      case 'W':/* Various operands.  */
+        switch (*++args)
+        {
+          case 'i':
+            switch (*++args)
+            {
+              case 'f':
+              /* Prefetch offset for 'Zicbop' extension.
+			 pseudo S-type but lower 5-bits zero. */
+                if (riscv_handle_implicit_zero_offset (imm_expr, s))
+                  continue;
+                my_getExpression (imm_expr, s);
+		            check_absolute_expr (ip, imm_expr, FALSE);
+		            if (((unsigned) (imm_expr->X_add_number) & 0x1fU)
+			        || imm_expr->X_add_number >= RISCV_IMM_REACH / 2
+			        || imm_expr->X_add_number < -RISCV_IMM_REACH / 2)
+			      as_bad (_ ("improper prefetch offset (%ld)"),
+				      (long) imm_expr->X_add_number);
+		            ip->insn_opcode |= ENCODE_STYPE_IMM (
+			        (unsigned) (imm_expr->X_add_number) & ~0x1fU);
+		            imm_expr->X_op = O_absent;
+		            s = expr_end;
+		            continue;
+		          default:
+		            goto unknown_riscv_ip_operand;
+            }
+            break;
+          default:
+            goto unknown_riscv_ip_operand;
+        }
+        break;
 
 	    default:
+      unknown_riscv_ip_operand:
 	      as_fatal (_("internal error: bad argument type %c"), *args);
 	    }
 	  break;
