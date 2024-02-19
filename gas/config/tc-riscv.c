@@ -382,7 +382,7 @@ riscv_set_abi_by_arch (void)
       gas_assert (abi_xlen != 0 && xlen != 0 && float_abi != FLOAT_ABI_DEFAULT);
       if (abi_xlen > xlen)
 	as_bad ("can't have %d-bit ABI on %d-bit ISA", abi_xlen, xlen);
-      else if (abi_xlen < xlen)
+      else if (abi_xlen < xlen && (abi_xlen != 32 && xlen != 64))
 	as_bad ("%d-bit ABI not yet supported on %d-bit ISA", abi_xlen, xlen);
 
       if (riscv_subset_supports (&riscv_rps_as, "e") && !rve_abi)
