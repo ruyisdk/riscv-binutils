@@ -4193,6 +4193,9 @@ decode_RISCV_machine_flags (char *out, unsigned e_flags)
   if (e_flags & EF_RISCV_TSO)
     out = stpcpy (out, ", TSO");
 
+  if (e_flags & EF_RISCV_X32)
+    out = stpcpy (out, ", X32");
+
   switch (e_flags & EF_RISCV_FLOAT_ABI)
     {
     case EF_RISCV_FLOAT_ABI_SOFT:
