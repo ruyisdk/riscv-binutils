@@ -774,7 +774,7 @@ int
 riscv_abi_xlen (struct gdbarch *gdbarch)
 {
   riscv_gdbarch_tdep *tdep = gdbarch_tdep<riscv_gdbarch_tdep> (gdbarch);
-  return tdep->abi_features.xlen;
+  return tdep->abi_features.abi_len;
 }
 
 /* See riscv-tdep.h.  */
@@ -2745,7 +2745,7 @@ struct riscv_call_info
     : int_regs (RISCV_A0_REGNUM, RISCV_A0_REGNUM + 7),
       float_regs (RISCV_FA0_REGNUM, RISCV_FA0_REGNUM + 7)
   {
-    xlen = riscv_abi_xlen (gdbarch);
+    xlen = riscv_isa_xlen (gdbarch);
     flen = riscv_abi_flen (gdbarch);
 
     /* Reduce the number of integer argument registers when using the
@@ -3934,9 +3934,15 @@ riscv_features_from_bfd (const bfd *abfd)
       int e_flags = elf_elfheader (abfd)->e_flags;
 
       if (eclass == ELFCLASS32)
-	features.xlen = 4;
+      {
+        features.xlen = 4;
+        features.abi_len = 4;
+      }
       else if (eclass == ELFCLASS64)
-	features.xlen = 8;
+      {
+        	features.xlen = 8;
+          features.abi_len = 8;
+      }
       else
 	internal_error (_("unknown ELF header class %d"), eclass);
 
@@ -3953,6 +3959,11 @@ riscv_features_from_bfd (const bfd *abfd)
 	      features.xlen = 4;
 	    }
 	  features.embedded = true;
+	}
+      if (e_flags & EF_RISCV_X32)
+	{
+	    features.xlen = 8;
+      features.abi_len = 4;
 	}
     }
 
@@ -4274,7 +4285,7 @@ riscv_gdbarch_init (struct gdbarch_info info,
   /* Target data types.  */
   set_gdbarch_short_bit (gdbarch, 16);
   set_gdbarch_int_bit (gdbarch, 32);
-  set_gdbarch_long_bit (gdbarch, riscv_isa_xlen (gdbarch) * 8);
+  set_gdbarch_long_bit (gdbarch, riscv_abi_xlen (gdbarch) * 8);
   set_gdbarch_long_long_bit (gdbarch, 64);
   set_gdbarch_float_bit (gdbarch, 32);
   set_gdbarch_double_bit (gdbarch, 64);
