@@ -1752,7 +1752,7 @@ perform_relocation (const reloc_howto_type *howto,
     case R_RISCV_GOT_HI20:
     case R_RISCV_TLS_GOT_HI20:
     case R_RISCV_TLS_GD_HI20:
-      if ((ARCH_SIZE > 32 || ABI_X32_P(input_bfd)) && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
+      if (ARCH_SIZE > 32 && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
 	return bfd_reloc_overflow;
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value));
       break;
