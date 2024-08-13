@@ -285,7 +285,7 @@ riscv_set_tso (void)
 static void
 riscv_set_x32 (void)
 {
-  elf_flags |= EF_RISCV_X32;
+  elf_flags |= EF_RISCV_N32;
 }
 
 /* The linked list hanging off of .subsets_list records all enabled extensions,

@@ -141,10 +141,10 @@
 
 #define RISCV_ELF_WORD_BYTES (1 << RISCV_ELF_LOG_WORD_BYTES)
 
-#define ABI_X32_P(abfd) \
-  ((elf_elfheader (abfd)->e_flags & EF_RISCV_X32) != 0)
+#define ABI_N32_P(abfd) \
+  ((elf_elfheader (abfd)->e_flags & EF_RISCV_N32) != 0)
 
-static bool ABI_X32 = false;
+static bool ABI_N32 = false;
 
 /* The name of the dynamic interpreter.  This is put in the .interp
    section.  */
@@ -1752,7 +1752,7 @@ perform_relocation (const reloc_howto_type *howto,
     case R_RISCV_GOT_HI20:
     case R_RISCV_TLS_GOT_HI20:
     case R_RISCV_TLS_GD_HI20:
-      if ((ARCH_SIZE > 32 || ABI_X32_P(input_bfd)) && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
+      if ((ARCH_SIZE > 32 || ABI_N32_P(input_bfd)) && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
 	return bfd_reloc_overflow;
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value));
       break;
@@ -1775,7 +1775,7 @@ perform_relocation (const reloc_howto_type *howto,
 
     case R_RISCV_CALL:
     case R_RISCV_CALL_PLT:
-      if ((ARCH_SIZE > 32 || ABI_X32_P(input_bfd))&& !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
+      if ((ARCH_SIZE > 32 || ABI_N32_P(input_bfd))&& !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
 	return bfd_reloc_overflow;
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value))
 	      | (ENCODE_ITYPE_IMM (value) << 32);
@@ -3776,7 +3776,7 @@ riscv_merge_arch_attr_info (bfd *ibfd, char *in_arch, char *out_arch)
     return NULL;
 
   /* Checking XLEN.  */
-  if (xlen_out != xlen_in && !ABI_X32_P(ibfd))
+  if (xlen_out != xlen_in && !ABI_N32_P(ibfd))
     {
       _bfd_error_handler
 	(_("error: %pB: ISA string of input (%s) doesn't match "
@@ -3796,7 +3796,7 @@ riscv_merge_arch_attr_info (bfd *ibfd, char *in_arch, char *out_arch)
   if (!riscv_merge_multi_letter_ext (&in, &out))
     return NULL;
 
-  if (xlen_in != xlen_out && !ABI_X32_P(ibfd))
+  if (xlen_in != xlen_out && !ABI_N32_P(ibfd))
     {
       _bfd_error_handler
 	(_("error: %pB: XLEN of input (%u) doesn't match "
@@ -3804,7 +3804,7 @@ riscv_merge_arch_attr_info (bfd *ibfd, char *in_arch, char *out_arch)
       return NULL;
     }
 
-  if (xlen_in != ARCH_SIZE && !ABI_X32_P(ibfd))
+  if (xlen_in != ARCH_SIZE && !ABI_N32_P(ibfd))
     {
       _bfd_error_handler
 	(_("error: %pB: unsupported XLEN (%u), you might be "
@@ -4084,7 +4084,7 @@ _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, struct bfd_link_info *info)
   elf_elfheader (obfd)->e_flags |= new_flags & EF_RISCV_TSO;
 
   /* Allow linking X32 and non-X32, and keep the X32 flag.  */
-  elf_elfheader (obfd)->e_flags |= new_flags & EF_RISCV_X32;
+  elf_elfheader (obfd)->e_flags |= new_flags & EF_RISCV_N32;
 
   return true;
 
@@ -4525,7 +4525,7 @@ _bfd_riscv_relax_call (bfd *abfd, asection *sec, asection *sym_sec,
   rvc = rvc && VALID_CJTYPE_IMM (foff);
 
   /* C.J exists on RV32 and RV64, but C.JAL is RV32-only.  */
-  rvc = rvc && (rd == 0 || (rd == X_RA && ARCH_SIZE == 32 && (!ABI_X32_P(abfd))));
+  rvc = rvc && (rd == 0 || (rd == X_RA && ARCH_SIZE == 32 && (!ABI_N32_P(abfd))));
 
   if (rvc)
     {
@@ -5234,7 +5234,7 @@ _bfd_riscv_relax_section (bfd *abfd, asection *sec,
   return ret;
 }
 
-#if ARCH_SIZE == 32 && !ABI_X32
+#if ARCH_SIZE == 32 && !ABI_N32
 # define PRSTATUS_SIZE			204
 # define PRSTATUS_OFFSET_PR_CURSIG	12
 # define PRSTATUS_OFFSET_PR_PID		24
@@ -5404,9 +5404,9 @@ riscv_elf_grok_psinfo (bfd *abfd, Elf_Internal_Note *note)
 static bool
 riscv_elf_object_p (bfd *abfd)
 {
-  ABI_X32 = ABI_X32_P(abfd);
+  ABI_N32 = ABI_N32_P(abfd);
   /* There are only three mach types in RISCV currently.  */
-  if (ABI_X32)
+  if (ABI_N32)
     bfd_default_set_arch_mach (abfd, bfd_arch_riscv, bfd_mach_riscv64x32);
   else if (strcmp (abfd->xvec->name, "elf32-littleriscv") == 0
       	|| strcmp (abfd->xvec->name, "elf32-bigriscv") == 0)
