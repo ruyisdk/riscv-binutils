@@ -3861,7 +3861,7 @@ riscv_features_from_bfd (const bfd *abfd)
 	    }
 	  features.embedded = true;
 	}
-      if (e_flags & EF_RISCV_X32)
+      if (e_flags & EF_RISCV_N32)
 	{
 	    features.xlen = 8;
       features.abi_len = 4;
