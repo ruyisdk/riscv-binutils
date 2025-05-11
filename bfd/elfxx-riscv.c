@@ -1022,6 +1022,12 @@ static const struct elf_reloc_map riscv_reloc_map[] =
   { BFD_RELOC_RISCV_SUB_ULEB128, R_RISCV_SUB_ULEB128 },
 };
 
+struct riscv_profiles
+{
+  const char *profile_name;
+  const char *profile_string;
+};
+
 /* Given a BFD reloc type, return a howto structure.  */
 
 reloc_howto_type *
@@ -1305,6 +1311,31 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"svadu", "+zicsr", check_implicit_always},
   {"svbare", "+zicsr", check_implicit_always},
   {NULL, NULL, NULL}
+};
+
+/* This table records the mapping form RISC-V Profiles into march string.  */
+static struct riscv_profiles riscv_profiles_table[] =
+{
+  /* RVI20U only contains the base extension 'i' as mandatory extension.  */
+  {"rvi20u64", "rv64i"},
+  {"rvi20u32", "rv32i"},
+
+  /* RVA20U contains the 'i,m,a,f,d,c,zicsr,zicntr,ziccif,ziccrse,ziccamoa,
+     zicclsm,za128rs' as mandatory extensions.  */
+  {"rva20u64", "rv64imafdc_zicsr_zicntr_ziccif_ziccrse_ziccamoa"
+   "_zicclsm_za128rs"},
+
+  /* RVA22U contains the 'i,m,a,f,d,c,zicsr,zihintpause,zba,zbb,zbs,zicntr,
+     zihpm,ziccif,ziccrse,ziccamoa, zicclsm,zic64b,za64rs,zicbom,zicbop,zicboz,
+     zfhmin,zkt' as mandatory extensions.  */
+  {"rva22u64", "rv64imafdc_zicsr_zicntr_ziccif_ziccrse_ziccamoa"
+   "_zicclsm_zic64b_za64rs_zihintpause_zba_zbb_zbs_zicbom_zicbop"
+   "_zicboz_zfhmin_zkt"},
+
+  /* Currently we do not define S/M mode Profiles.  */
+
+  /* Terminate the list.  */
+  {NULL, NULL}
 };
 
 /* For default_enable field, decide if the extension should
@@ -1965,10 +1996,11 @@ riscv_parsing_subset_version (const char *p,
 static const char *
 riscv_parse_extensions (riscv_parse_subset_t *rps,
 			const char *arch,
-			const char *p)
+			const char *p,
+			bool profile)
 {
-  /* First letter must start with i, e or g.  */
-  if (*p != 'e' && *p != 'i' && *p != 'g')
+  /* First letter must start with i, e, g or a profile.  */
+  if (*p != 'e' && *p != 'i' && *p != 'g' && !profile)
     {
       rps->error_handler
 	(_("%s: first ISA extension must be `e', `i' or `g'"),
@@ -2237,6 +2269,43 @@ riscv_set_default_arch (riscv_parse_subset_t *rps)
     }
 }
 
+static bool
+riscv_find_profiles (riscv_parse_subset_t *rps, const char *p)
+{
+  /* Checking if input string contains a Profiles.
+     There are two cases use Profiles in -march option:
+
+       1. Only use Profiles in '-march' as input
+       2. Mixed Profiles with other extensions
+
+     Use '_' to split Profiles and other extensions.  */
+
+  for (int i = 0; riscv_profiles_table[i].profile_name != NULL; ++i)
+  {
+    /* Find profile at the begin.  */
+    if (strncmp(p, riscv_profiles_table[i].profile_name,
+		  strlen(riscv_profiles_table[i].profile_name)) == 0)
+    {
+      /* Handle the profile string.  */
+      riscv_parse_subset(rps, riscv_profiles_table[i].profile_string);
+      p += strlen(riscv_profiles_table[i].profile_name);
+      /* Handle string after profiles if exists.  */
+      if(*p != '\0')
+      {
+	/* If missing underline bewteen profile and other extensions,
+	   warn the user but not deal as an error.  */
+	if(*p != '_')
+	  _bfd_error_handler
+	  (_("Warning: should use \"_\" to contact Profiles with other extensions"));
+	riscv_parse_extensions (rps, p, p, true);
+      }
+      return true;
+    }
+  }
+  /* Not found profile, return directly.  */
+  return false;
+}
+
 /* Function for parsing ISA string.
 
    Return Value:
@@ -2275,36 +2344,39 @@ riscv_parse_subset (riscv_parse_subset_t *rps,
     }
 
   p = arch;
-  if (startswith (p, "rv32"))
-    {
-      *rps->xlen = 32;
-      p += 4;
-    }
-  else if (startswith (p, "rv64"))
-    {
-      *rps->xlen = 64;
-      p += 4;
-    }
-  else
-    {
-      /* ISA string shouldn't be NULL or empty here.  For linker,
-	 it might be empty when we failed to merge the ISA string
-	 in the riscv_merge_attributes.  For assembler, we might
-	 give an empty string by .attribute arch, "" or -march=.
-	 However, We have already issued the correct error message
-	 in another side, so do not issue this error when the ISA
-	 string is empty.  */
-      if (strlen (arch))
-	rps->error_handler (
-	  _("%s: ISA string must begin with rv32 or rv64"),
-	  arch);
+  /* Check if using Profiles.  */
+  if(!riscv_find_profiles(rps, arch))
+  {
+    if (startswith (p, "rv32"))
+      {
+	*rps->xlen = 32;
+	p += 4;
+      }
+    else if (startswith (p, "rv64"))
+      {
+	*rps->xlen = 64;
+	p += 4;
+      }
+    else
+      {
+	/* ISA string shouldn't be NULL or empty here.  For linker,
+	   it might be empty when we failed to merge the ISA string
+	   in the riscv_merge_attributes.  For assembler, we might
+	   give an empty string by .attribute arch, "" or -march=.
+	   However, We have already issued the correct error message
+	   in another side, so do not issue this error when the ISA
+	   string is empty.  */
+	if (strlen (arch))
+	  rps->error_handler (
+	    _("%s: ISA string must begin with rv32, rv64 or Profiles"),
+	    arch);
+	return false;
+      }
+
+    /* Parse single standard and prefixed extensions.  */
+    if (riscv_parse_extensions (rps, arch, p, false) == NULL)
       return false;
-    }
-
-  /* Parse single standard and prefixed extensions.  */
-  if (riscv_parse_extensions (rps, arch, p) == NULL)
-    return false;
-
+  }
   /* Finally add implicit extensions according to the current
      extensions.  */
   riscv_parse_add_implicit_subsets (rps);
