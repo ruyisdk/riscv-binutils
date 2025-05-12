@@ -1348,7 +1348,14 @@ static struct riscv_profiles riscv_profiles_table[] =
    "_zicboz_zfhmin_zkt_zihintntl_zicond_zimop_zcmop_zcb"
    "_zfa_zawrs"},
 
-  /* Currently we do not define S/M mode Profiles.  */
+    /* RVA23S contains all mandatory base ISA for RVA23U64 and the privileged
+     as mandatory extensions.  */
+  {"rva23s64", "rv64imafdcv_zicsr_zicntr_zihpm_ziccif_ziccrse_ziccamoa"
+   "_zicclsm_zic64b_za64rs_zihintpause_zba_zbb_zbs_zicbom_zicbop"
+   "_zicboz_zfhmin_zkt_zvfhmin_zvbb_zvkt_zihintntl_zicond_zimop_zcmop_zcb"
+   "_zfa_zawrs_svbare_svade_ssccptr_sstvecd_sstvala_sscounterenw_svpbmt"
+   "_svinval_svnapot_sstc_sscofpmf_ssnpm_ssu64xl_sha"
+  },
 
   /* Terminate the list.  */
   {NULL, NULL}
