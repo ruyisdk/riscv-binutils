@@ -1262,6 +1262,7 @@ static const struct riscv_implicit_subset riscv_implicit_subsets[] =
 
   {"shcounterenw", "+h", check_implicit_always},
   {"shgatpa", "+h", check_implicit_always},
+  {"shlcofideleg", "+h", check_implicit_always},
   {"shtvala", "+h", check_implicit_always},
   {"shvsatpa", "+h", check_implicit_always},
   {"shvstvala", "+h", check_implicit_always},
@@ -1574,6 +1575,7 @@ static const struct riscv_supported_ext riscv_supported_std_s_ext[] =
   {"sha",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"shcounterenw",	ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"shgatpa",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"shlcofideleg",	ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"shtvala",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"shvsatpa",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"shvstvala",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },

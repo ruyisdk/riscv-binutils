@@ -57,6 +57,7 @@ imply sha
 
 imply shcounterenw
 imply shgatpa
+imply shlcofideleg
 imply shtvala
 imply shvsatpa
 imply shvstvala
