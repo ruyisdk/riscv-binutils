@@ -1516,6 +1516,10 @@ static struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zcmop",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zcmp",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zcmt",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
+  {"zbpbo",		ISA_SPEC_CLASS_DRAFT,		0, 9,  11 },
+  {"zpn",		ISA_SPEC_CLASS_DRAFT,		0, 9,  11 },
+  {"zpsf",		ISA_SPEC_CLASS_DRAFT,		0, 9,  11 },
+
   {NULL, 0, 0, 0, 0}
 };
 
@@ -2991,6 +2995,18 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "xmipsexectl");
     case INSN_CLASS_XMIPSLSP:
       return riscv_subset_supports (rps, "xmipslsp");
+    case INSN_CLASS_ZPN:
+      return riscv_subset_supports (rps, "zpn");
+    case INSN_CLASS_ZPSF:
+      return riscv_subset_supports (rps, "zpsf");
+    case INSN_CLASS_ZBPBO:
+      return riscv_subset_supports (rps, "zbpbo");
+    case INSN_CLASS_ZBB_OR_ZBPBO:
+      return (riscv_subset_supports (rps, "zbb")
+        || riscv_subset_supports (rps, "zbpbo"));
+    case INSN_CLASS_ZBKB_OR_ZBPBO:
+      return (riscv_subset_supports (rps, "zbkb")
+        || riscv_subset_supports (rps, "zbpbo"));
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));
@@ -3290,6 +3306,16 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "xtheadzvamo";
     case INSN_CLASS_XSFCEASE:
       return "xsfcease";
+    case INSN_CLASS_ZPN:
+      return _("zpn");
+    case INSN_CLASS_ZPSF:
+      return _("zpsf");
+    case INSN_CLASS_ZBPBO:
+      return _("zbpbo");
+    case INSN_CLASS_ZBB_OR_ZBPBO:
+      return _("zbpbo' or `zbb");
+    case INSN_CLASS_ZBKB_OR_ZBPBO:
+      return _("zbpbo' or `zbkb");
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));
