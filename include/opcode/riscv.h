@@ -132,6 +132,16 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   ((RV_X(x, 25, 1)) | (RV_X(x, 20, 5) << 1) | (RV_IMM_SIGN_N(x, 20, 5) << 5))
 #define EXTRACT_CV_SIMD_UIMM6(x) \
   ((RV_X(x, 25, 1)) | (RV_X(x, 20, 5) << 1))
+#define EXTRACT_PTYPE_IMM2U(x) \
+  (RV_X(x, 20, 2))
+#define EXTRACT_PTYPE_IMM3U(x) \
+  (RV_X(x, 20, 3))
+#define EXTRACT_PTYPE_IMM4U(x) \
+  (RV_X(x, 20, 4))
+#define EXTRACT_PTYPE_IMM5U(x) \
+  (RV_X(x, 20, 5))
+#define EXTRACT_PTYPE_IMM6U(x) \
+  (RV_X(x, 20, 6))
 /* Vendor-specific (MIPS) extract macros.  */
 #define EXTRACT_MIPS_LWP_IMM(x) \
   (RV_X(x, 22, 5) << 2)
@@ -209,6 +219,16 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   ((RV_X(x, 0, 1) << 25) | (RV_X(x, 1, 5) << 20))
 #define ENCODE_CV_SIMD_UIMM6(x) \
   ((RV_X(x, 0, 1) << 25) | (RV_X(x, 1, 5) << 20))
+#define ENCODE_PTYPE_IMM2U(x) \
+  (RV_X(x, 0, 2) << 20)
+#define ENCODE_PTYPE_IMM3U(x) \
+  (RV_X(x, 0, 3) << 20)
+#define ENCODE_PTYPE_IMM4U(x) \
+  (RV_X(x, 0, 4) << 20)
+#define ENCODE_PTYPE_IMM5U(x) \
+  (RV_X(x, 0, 5) << 20)
+#define ENCODE_PTYPE_IMM6U(x) \
+  (RV_X(x, 0, 6) << 20)
 /* Vendor-specific (MIPS) encode macros.  */
 #define ENCODE_MIPS_LWP_IMM(x) \
   (RV_X(x, 2, 5) << 22)
@@ -246,6 +266,11 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 #define VALID_ZCB_BYTE_UIMM(x) (EXTRACT_ZCB_BYTE_UIMM(ENCODE_ZCB_BYTE_UIMM(x)) == (x))
 #define VALID_ZCB_HALFWORD_UIMM(x) (EXTRACT_ZCB_HALFWORD_UIMM(ENCODE_ZCB_HALFWORD_UIMM(x)) == (x))
 #define VALID_ZCMP_SPIMM(x) (EXTRACT_ZCMP_SPIMM(ENCODE_ZCMP_SPIMM(x)) == (x))
+#define VALID_PTYPE_IMM2U(x) (EXTRACT_PTYPE_IMM2U(ENCODE_PTYPE_IMM2U(x)) == (x))
+#define VALID_PTYPE_IMM3U(x) (EXTRACT_PTYPE_IMM3U(ENCODE_PTYPE_IMM3U(x)) == (x))
+#define VALID_PTYPE_IMM4U(x) (EXTRACT_PTYPE_IMM4U(ENCODE_PTYPE_IMM4U(x)) == (x))
+#define VALID_PTYPE_IMM5U(x) (EXTRACT_PTYPE_IMM5U(ENCODE_PTYPE_IMM5U(x)) == (x))
+#define VALID_PTYPE_IMM6U(x) (EXTRACT_PTYPE_IMM6U(ENCODE_PTYPE_IMM6U(x)) == (x))
 
 #define RISCV_RTYPE(insn, rd, rs1, rs2) \
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ((rs1) << OP_SH_RS1) | ((rs2) << OP_SH_RS2))
@@ -603,6 +628,11 @@ enum riscv_insn_class
   INSN_CLASS_XMIPSCMOV,
   INSN_CLASS_XMIPSEXECTL,
   INSN_CLASS_XMIPSLSP,
+  INSN_CLASS_ZBPBO,
+  INSN_CLASS_ZBB_OR_ZBPBO,
+  INSN_CLASS_ZBKB_OR_ZBPBO,
+  INSN_CLASS_ZPN,
+  INSN_CLASS_ZPSF,
 };
 
 /* This structure holds information for a particular instruction.  */

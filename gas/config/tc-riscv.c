@@ -1582,6 +1582,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	case 'Z': /* RS1, CSR number.  */
 	case 'S': /* RS1, floating point.  */
 	case 's': USE_BITS (OP_MASK_RS1, OP_SH_RS1); break;
+	case 'g': /* RS1 and RS2 are the same.  */
 	case 'U': /* RS1 and RS2 are the same, floating point.  */
 	  USE_BITS (OP_MASK_RS1, OP_SH_RS1);
 	  /* Fall through.  */
@@ -1771,6 +1772,18 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	      goto unknown_validate_operand;
 	    }
 	  break;
+	case 'n': /* Rvp extension.  */
+	  switch (*++oparg)
+		{
+	    case '2': used_bits |= ENCODE_PTYPE_IMM2U (-1U); break;
+	    case '3': used_bits |= ENCODE_PTYPE_IMM3U (-1U); break;
+	    case '4': used_bits |= ENCODE_PTYPE_IMM4U (-1U); break;
+	    case '5': used_bits |= ENCODE_PTYPE_IMM5U (-1U); break;
+	    case '6': used_bits |= ENCODE_PTYPE_IMM6U (-1U); break;
+	    default:
+	    goto unknown_validate_operand;
+		}
+		break;
 	default:
 	unknown_validate_operand:
 	  as_bad (_("internal: bad RISC-V opcode "
@@ -3525,6 +3538,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 
 	    case 'd': /* Destination register.  */
 	    case 's': /* Source register.  */
+	    case 'g': /* RS1 and RS2  */
 	    case 't': /* Target register.  */
 	    case 'r': /* RS3 */
 	      if (reg_lookup (&asarg, RCLASS_GPR, &regno))
@@ -3542,6 +3556,9 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      break;
 		    case 'd':
 		      INSERT_OPERAND (RD, *ip, regno);
+		      break;
+		    case 'g':
+		      INSERT_OPERAND (RS1, *ip, regno);
 		      break;
 		    case 't':
 		      INSERT_OPERAND (RS2, *ip, regno);
@@ -4278,6 +4295,94 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  goto unknown_riscv_ip_operand;
 		}
 	      break;
+
+	    case 'n':
+	      switch (*++oparg)
+		{
+		case '2':
+		  {
+		    my_getExpression (imm_expr, asarg);
+		    if (imm_expr->X_op != O_constant
+		    || imm_expr->X_add_number >= xlen
+		    || imm_expr->X_add_number < 0)
+		      break;
+		
+		    if(VALID_PTYPE_IMM2U (imm_expr->X_add_number))
+		    {
+		      ip->insn_opcode |= ENCODE_PTYPE_IMM2U (imm_expr->X_add_number);
+		      asarg = expr_parse_end;
+		      imm_expr->X_op = O_absent;
+		    }
+		  }
+		  continue;
+		case '3':
+		  {
+		    my_getExpression (imm_expr, asarg);
+		    if (imm_expr->X_op != O_constant
+		    || imm_expr->X_add_number >= xlen
+		    || imm_expr->X_add_number < 0)
+		      break;
+		
+		    if(VALID_PTYPE_IMM3U (imm_expr->X_add_number))
+		    {
+		      ip->insn_opcode |= ENCODE_PTYPE_IMM3U (imm_expr->X_add_number);
+		      asarg = expr_parse_end;
+		      imm_expr->X_op = O_absent;
+		    }
+		  }
+		  continue;
+		case '4':
+		  {
+		    my_getExpression (imm_expr, asarg);
+		    if (imm_expr->X_op != O_constant
+		    || imm_expr->X_add_number >= xlen
+		    || imm_expr->X_add_number < 0)
+		      break;
+		
+		    if(VALID_PTYPE_IMM4U (imm_expr->X_add_number))
+		    {
+		      ip->insn_opcode |= ENCODE_PTYPE_IMM4U (imm_expr->X_add_number);
+		      asarg = expr_parse_end;
+		      imm_expr->X_op = O_absent;
+		    }
+		  }
+		  continue;
+		case '5':
+		  {
+		    my_getExpression (imm_expr, asarg);
+		    if (imm_expr->X_op != O_constant
+		    || imm_expr->X_add_number >= xlen
+		    || imm_expr->X_add_number < 0)
+		      break;
+		
+		    if(VALID_PTYPE_IMM5U (imm_expr->X_add_number))
+		    {
+		      ip->insn_opcode |= ENCODE_PTYPE_IMM5U (imm_expr->X_add_number);
+		      asarg = expr_parse_end;
+		      imm_expr->X_op = O_absent;
+		    }
+		  }
+		  continue;
+		case '6':
+		  {
+		    my_getExpression (imm_expr, asarg);
+		    if (imm_expr->X_op != O_constant
+		    || imm_expr->X_add_number >= xlen
+		    || imm_expr->X_add_number < 0)
+		      break;
+		
+		    if(VALID_PTYPE_IMM6U (imm_expr->X_add_number))
+		    {
+		      ip->insn_opcode |= ENCODE_PTYPE_IMM6U (imm_expr->X_add_number);
+		      asarg = expr_parse_end;
+		      imm_expr->X_op = O_absent;
+		    }
+		  }
+		  continue;
+		default:
+		  goto unknown_riscv_ip_operand;
+		}
+	    break;
 
 	    default:
 	    unknown_riscv_ip_operand:

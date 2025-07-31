@@ -922,6 +922,29 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	    }
 	  break;
 
+	case 'n':
+	  {
+	  switch (*++oparg)
+	      {
+	    case '2':
+	      print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM2U (l));
+	      break;
+	    case '3':
+	      print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM3U (l));
+	      break;
+	    case '4':
+	      print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM4U (l));
+	      break;
+	    case '5':
+	      print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM5U (l));
+	      break;
+	    case '6':
+	      print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM6U (l));
+	      break;
+	      }
+	  }
+	  break;
+
 	default:
 	undefined_modifier:
 	  /* xgettext:c-format */
