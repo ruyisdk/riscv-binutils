@@ -1,4 +1,8 @@
 dsp64:
+	# Table 10. 16-bit Packing Instructions (4)
+	pkbb16    a1, a2, a3
+	pktt16    a1, a2, a3
+
 	# Table 25. (RV64 Only) SIMD 32-bit Add/Subtract Instructions (30)
 	add32     a1, a2, a3
 	radd32    a1, a2, a3
@@ -53,6 +57,7 @@ dsp64:
 	smax32    a1, a2, a3
 	umax32    a1, a2, a3
 	kabs32    a1, a2
+	clz32     a1, a2
 
 	# Table 28. (RV64 Only) SIMD Q15 saturating Multiply Instructions (9)
 	khmbb16   a1, a2, a3
@@ -83,6 +88,7 @@ dsp64:
 	kmads32   a1, a2, a3
 	kmadrs32  a1, a2, a3
 	kmaxds32  a1, a2, a3
+	kmada32   a1, a2, a3
 	kmsda32   a1, a2, a3
 	kmsxda32  a1, a2, a3
 	smds32    a1, a2, a3

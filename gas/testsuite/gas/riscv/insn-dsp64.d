@@ -8,6 +8,8 @@
 Disassembly of section .text:
 
 0+000 <dsp64>:
+[ 	]+[0-9a-f]+:[ 	]+0ed615f7[ 	]+pkbb16[ 	]+a1,a2,a3
+[ 	]+[0-9a-f]+:[ 	]+2ed615f7[ 	]+pktt16[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+40d625f7[ 	]+add32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+00d625f7[ 	]+radd32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+20d625f7[ 	]+uradd32[ 	]+a1,a2,a3
@@ -57,6 +59,7 @@ Disassembly of section .text:
 [ 	]+[0-9a-f]+:[ 	]+92d625f7[ 	]+smax32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+a2d625f7[ 	]+umax32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+ad2605f7[ 	]+kabs32[ 	]+a1,a2
+[ 	]+[0-9a-f]+:[ 	]+af9605f7[ 	]+clz32[ 	]+a1,a2
 [ 	]+[0-9a-f]+:[ 	]+dcd615f7[ 	]+khmbb16[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+ecd615f7[ 	]+khmbt16[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+fcd615f7[ 	]+khmtt16[ 	]+a1,a2,a3
@@ -79,6 +82,7 @@ Disassembly of section .text:
 [ 	]+[0-9a-f]+:[ 	]+5cd625f7[ 	]+kmads32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+6cd625f7[ 	]+kmadrs32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+7cd625f7[ 	]+kmaxds32[ 	]+a1,a2,a3
+[ 	]+[0-9a-f]+:[ 	]+94d615f7[ 	]+kmar64[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+4cd625f7[ 	]+kmsda32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+4ed625f7[ 	]+kmsxda32[ 	]+a1,a2,a3
 [ 	]+[0-9a-f]+:[ 	]+58d625f7[ 	]+smds32[ 	]+a1,a2,a3
