@@ -1,4 +1,4 @@
-#as: -march=rv64gc_zpn_zpsf -mabi=lp64
+#as: -march=rv64gc_zpn_zpsfoperand -mabi=lp64
 #source: insn-dsp64.s
 #objdump: -dr
 

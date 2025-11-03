@@ -1,4 +1,4 @@
-#as: -march=rv32gc_zpn_zpsf
+#as: -march=rv32gc_zpn_zpsfoperand
 #source: insn-dsp.s
 #objdump: -d -M no-aliases
 
