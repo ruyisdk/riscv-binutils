@@ -1410,6 +1410,7 @@ static struct riscv_supported_ext riscv_supported_std_ext[] =
   {"c",		ISA_SPEC_CLASS_2P2,		2, 0, 0 },
   {"b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"v",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"p",		ISA_SPEC_CLASS_DRAFT,		0, 9, 11 },
   {"h",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {NULL, 0, 0, 0, 0}
 };
@@ -2995,6 +2996,8 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "xmipsexectl");
     case INSN_CLASS_XMIPSLSP:
       return riscv_subset_supports (rps, "xmipslsp");
+    case INSN_CLASS_P:
+      return riscv_subset_supports (rps, "p");
     case INSN_CLASS_ZPN:
       return riscv_subset_supports (rps, "zpn");
     case INSN_CLASS_ZPSF:
@@ -3306,6 +3309,8 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "xtheadzvamo";
     case INSN_CLASS_XSFCEASE:
       return "xsfcease";
+    case INSN_CLASS_P:
+      return _("p");
     case INSN_CLASS_ZPN:
       return _("zpn");
     case INSN_CLASS_ZPSF:

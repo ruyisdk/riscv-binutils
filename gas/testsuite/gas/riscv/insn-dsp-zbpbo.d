@@ -1,4 +1,4 @@
-#as: -march=rv32gc_zbpbo_zpn_zpsf -mabi=ilp32
+#as: -march=rv32gc_zbpbo_zpn_zpsfoperand -mabi=ilp32
 #source: insn-dsp-zbpbo.s
 #objdump: -d
 
