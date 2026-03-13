@@ -1,5 +1,8 @@
 -*- text -*-
 
+* Add support for RISC-V standard extensions:
+  zibi v1.0.
+
 Changes in 2.46:
 
 * Add support for AMD Zen6 processor.

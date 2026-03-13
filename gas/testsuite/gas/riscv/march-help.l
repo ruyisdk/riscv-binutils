@@ -10,6 +10,7 @@ All available -march extensions for RISC-V:
 	b                                       1.0
 	v                                       1.0
 	h                                       1.0
+	zibi                                    1.0
 	zic64b                                  1.0
 	ziccamoa                                1.0
 	ziccif                                  1.0

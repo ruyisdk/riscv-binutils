@@ -2400,6 +2400,11 @@
 #define MASK_C_SSPUSH 0xffff
 #define MATCH_C_SSPOPCHK 0x6281
 #define MASK_C_SSPOPCHK 0xffff
+/* Zibi instructions.  */
+#define MATCH_BEQI 0x2063
+#define MASK_BEQI  0x707f
+#define MATCH_BNEI 0x3063
+#define MASK_BNEI  0x707f
 /* Zicfilp instructions.  */
 #define MATCH_LPAD 0x17
 #define MASK_LPAD  0xfff
@@ -4717,6 +4722,9 @@ DECLARE_INSN(hsv_b, MATCH_HSV_B, MASK_HSV_B)
 DECLARE_INSN(hsv_h, MATCH_HSV_H, MASK_HSV_H)
 DECLARE_INSN(hsv_w, MATCH_HSV_W, MASK_HSV_W)
 DECLARE_INSN(hsv_d, MATCH_HSV_D, MASK_HSV_D)
+/* Zibi instructions.  */
+DECLARE_INSN(beqi, MATCH_BEQI, MASK_BEQI)
+DECLARE_INSN(bnei, MATCH_BNEI, MASK_BNEI)
 /* Zicbop instructions.  */
 DECLARE_INSN(prefetch_r, MATCH_PREFETCH_R, MASK_PREFETCH_R)
 DECLARE_INSN(prefetch_w, MATCH_PREFETCH_W, MASK_PREFETCH_W)
