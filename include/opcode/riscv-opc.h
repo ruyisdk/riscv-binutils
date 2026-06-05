@@ -2233,6 +2233,11 @@
 #define MASK_VGHSH_VV 0xfe00707f
 #define MATCH_VGMUL_VV 0xa208a077
 #define MASK_VGMUL_VV 0xfe0ff07f
+/* Zvkgs instructions.  */
+#define MATCH_VGHSH_VS 0x8e002077
+#define MASK_VGHSH_VS 0xfe00707f
+#define MATCH_VGMUL_VS 0xa608a077
+#define MASK_VGMUL_VS 0xfe0ff07f
 /* Zvkned instructions.  */
 #define MATCH_VAESDF_VS 0xa600a077
 #define MASK_VAESDF_VS 0xfe0ff07f
@@ -4820,6 +4825,9 @@ DECLARE_INSN(vclmulh_vx, MATCH_VCLMULH_VX, MASK_VCLMULH_VX)
 /* Zvkg instructions.  */
 DECLARE_INSN(vghsh_vv, MATCH_VGHSH_VV, MASK_VGHSH_VV)
 DECLARE_INSN(vgmul_vv, MATCH_VGMUL_VV, MASK_VGMUL_VV)
+/* Zvkgs instructions.  */
+DECLARE_INSN(vghsh_vs, MATCH_VGHSH_VS, MASK_VGHSH_VS)
+DECLARE_INSN(vgmul_vs, MATCH_VGMUL_VS, MASK_VGMUL_VS)
 /* Zvkned instructions.  */
 DECLARE_INSN(vaesdf_vs, MATCH_VAESDF_VS, MASK_VAESDF_VS)
 DECLARE_INSN(vaesdf_vv, MATCH_VAESDF_VV, MASK_VAESDF_VV)
