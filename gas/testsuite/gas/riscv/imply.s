@@ -102,6 +102,7 @@ imply zk
 imply zkn
 imply zks
 imply zvbb
+imply zvkgs
 imply zvkng
 imply zvknc
 imply zvkn
