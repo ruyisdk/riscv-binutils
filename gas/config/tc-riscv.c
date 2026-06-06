@@ -85,6 +85,7 @@ enum riscv_csr_class
   CSR_CLASS_SMCNTRPMF_32,	/* Smcntrpmf, rv32 only */
   CSR_CLASS_SMCTR,		/* Smctr */
   CSR_CLASS_SMRNMI,		/* Smrnmi */
+  CSR_CLASS_SMSDID,		/* Smsdid */
   CSR_CLASS_SMSTATEEN,		/* Smstateen only */
   CSR_CLASS_SMSTATEEN_32,	/* Smstateen RV32 only */
   CSR_CLASS_SSAIA,		/* Ssaia */
@@ -1097,6 +1098,9 @@ riscv_csr_address (const char *csr_name,
       break;
     case CSR_CLASS_SMRNMI:
       extension = "smrnmi";
+      break;
+    case CSR_CLASS_SMSDID:
+      extension = "smsdid";
       break;
     case CSR_CLASS_SMSTATEEN_32:
       is_rv32_only = true;

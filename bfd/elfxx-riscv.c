@@ -1316,6 +1316,7 @@ static const struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"smcntrpmf", "+zicsr", check_implicit_always},
   {"smctr", "+zicsr", check_implicit_always},
   {"smrnmi", "+zicsr", check_implicit_always},
+  {"smsdid", "+zicsr", check_implicit_always},
   {"smstateen", "+ssstateen", check_implicit_always},
   {"smepmp", "+zicsr", check_implicit_always},
   {"smdbltrp", "+zicsr", check_implicit_always},
@@ -1579,6 +1580,7 @@ static const struct riscv_supported_ext riscv_supported_std_s_ext[] =
   {"smctr",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smepmp",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smrnmi",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"smsdid",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smstateen",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smdbltrp",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssaia",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
@@ -3009,6 +3011,11 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "zclsd");
     case INSN_CLASS_SMRNMI:
       return riscv_subset_supports (rps, "smrnmi");
+    case INSN_CLASS_SMSDID:
+      return riscv_subset_supports (rps, "smsdid");
+    case INSN_CLASS_SMSDID_AND_SVINVAL:
+      return (riscv_subset_supports (rps, "smsdid")
+	      && riscv_subset_supports (rps, "svinval"));
     case INSN_CLASS_SVINVAL:
       return riscv_subset_supports (rps, "svinval");
     case INSN_CLASS_H:
@@ -3328,6 +3335,17 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "zclsd";
     case INSN_CLASS_SMRNMI:
       return "smrnmi";
+    case INSN_CLASS_SMSDID:
+      return "smsdid";
+    case INSN_CLASS_SMSDID_AND_SVINVAL:
+      if (!riscv_subset_supports (rps, "smsdid"))
+	{
+	  if (!riscv_subset_supports (rps, "svinval"))
+	    return _("smsdid' and `svinval");
+	  else
+	    return "smsdid";
+	}
+      return "svinval";
     case INSN_CLASS_SVINVAL:
       return "svinval";
     case INSN_CLASS_H:

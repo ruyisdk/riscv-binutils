@@ -2360,10 +2360,14 @@ const struct riscv_opcode riscv_opcodes[] =
 /* Smctr/Ssctr instruction.  */
 {"sctrclr", 0, INSN_CLASS_SMCTR_OR_SSCTR, "", MATCH_SCTRCLR, MASK_SCTRCLR, match_opcode, 0 },
 
+/* Smsdid instruction.  */
+{"mfence.pa", 0, INSN_CLASS_SMSDID, "s,t", MATCH_MFENCE_PA, MASK_MFENCE_PA, match_opcode, 0 },
+
 /* Svinval instructions.  */
 {"sinval.vma",      0, INSN_CLASS_SVINVAL, "s,t", MATCH_SINVAL_VMA, MASK_SINVAL_VMA, match_opcode, 0 },
 {"sfence.w.inval",  0, INSN_CLASS_SVINVAL, "",    MATCH_SFENCE_W_INVAL, MASK_SFENCE_W_INVAL, match_opcode, 0 },
 {"sfence.inval.ir", 0, INSN_CLASS_SVINVAL, "",    MATCH_SFENCE_INVAL_IR, MASK_SFENCE_INVAL_IR, match_opcode, 0 },
+{"minval.pa",       0, INSN_CLASS_SMSDID_AND_SVINVAL, "s,t", MATCH_MINVAL_PA, MASK_MINVAL_PA, match_opcode, 0 },
 {"hinval.vvma",     0, INSN_CLASS_SVINVAL, "s,t", MATCH_HINVAL_VVMA, MASK_HINVAL_VVMA, match_opcode, 0 },
 {"hinval.gvma",     0, INSN_CLASS_SVINVAL, "s,t", MATCH_HINVAL_GVMA, MASK_HINVAL_GVMA, match_opcode, 0 },
 
