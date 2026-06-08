@@ -453,7 +453,9 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		unsigned int imm_vsew = EXTRACT_OPERAND (VSEW, imm);
 		unsigned int imm_vta = EXTRACT_OPERAND (VTA, imm);
 		unsigned int imm_vma = EXTRACT_OPERAND (VMA, imm);
-		unsigned int imm_vtype_res = (imm >> 8);
+		unsigned int imm_vtype_altfmt
+		  = EXTRACT_OPERAND (VTYPE_ALTFMT, imm);
+		unsigned int imm_vtype_res = (imm >> 9);
 
 		if (imm_vsew < ARRAY_SIZE (riscv_vsew)
 		    && imm_vlmul < ARRAY_SIZE (riscv_vlmul)
@@ -461,11 +463,19 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		    && imm_vma < ARRAY_SIZE (riscv_vma)
 		    && !imm_vtype_res
 		    && riscv_vsew[imm_vsew] != NULL
-		    && riscv_vlmul[imm_vlmul] != NULL)
-		  print (info->stream, dis_style_text, "%s,%s,%s,%s",
-			 riscv_vsew[imm_vsew],
-			 riscv_vlmul[imm_vlmul], riscv_vta[imm_vta],
-			 riscv_vma[imm_vma]);
+		    && riscv_vlmul[imm_vlmul] != NULL
+		    && (!imm_vtype_altfmt || imm_vsew < 2))
+		  {
+		    if (imm_vtype_altfmt)
+		      print (info->stream, dis_style_text, "%salt",
+			     riscv_vsew[imm_vsew]);
+		    else
+		      print (info->stream, dis_style_text, "%s",
+			     riscv_vsew[imm_vsew]);
+		    print (info->stream, dis_style_text, ",%s,%s,%s",
+			   riscv_vlmul[imm_vlmul], riscv_vta[imm_vta],
+			   riscv_vma[imm_vma]);
+		  }
 		else
 		  print (info->stream, dis_style_immediate, "%d", imm);
 	      }

@@ -2633,15 +2633,46 @@ my_getOpcodeExpression (expressionS *ep, bfd_reloc_code_real_type *reloc,
    On exit, EXPR_PARSE_END points to the first character after the
    expression.  */
 
+/* The vsetvli/vsetivli vsew altfmt constants.  */
+static const char * const riscv_vsew_altfmt[] =
+{
+  "e8alt", "e16alt"
+};
+
+static bool
+riscv_vtype_altfmt_supported (void)
+{
+  return (riscv_subset_supports (&riscv_rps_as, "zvfbfa")
+	  || riscv_subset_supports (&riscv_rps_as, "zvfofp8min")
+	  || riscv_subset_supports (&riscv_rps_as, "zvfqwdota8f")
+	  || riscv_subset_supports (&riscv_rps_as, "zvfwdota16bf")
+	  || riscv_subset_supports (&riscv_rps_as, "zvqwdota8i")
+	  || riscv_subset_supports (&riscv_rps_as, "zvqwdota16i"));
+}
+
 static void
 my_getVsetvliExpression (expressionS *ep, char *str)
 {
   unsigned int vsew_value = 0, vlmul_value = 0;
-  unsigned int vta_value = 0, vma_value = 0;
+  unsigned int vta_value = 0, vma_value = 0, altfmt_value = 0;
   bfd_boolean vsew_found = FALSE, vlmul_found = FALSE;
   bfd_boolean vta_found = FALSE, vma_found = FALSE;
 
-  if (arg_lookup (&str, riscv_vsew, ARRAY_SIZE (riscv_vsew), &vsew_value))
+  if (arg_lookup (&str, riscv_vsew_altfmt,
+		  ARRAY_SIZE (riscv_vsew_altfmt), &vsew_value))
+    {
+      if (*str == ',')
+	++str;
+      if (vsew_found)
+	as_bad (_("multiple vsew constants"));
+      if (!riscv_vtype_altfmt_supported ())
+	as_bad (_("symbolic vtype altfmt requires `zvfbfa', "
+		  "`zvfofp8min' or a `zvdota' extension"));
+      altfmt_value = 1 << OP_SH_VTYPE_ALTFMT;
+      vsew_found = TRUE;
+    }
+  if (!vsew_found
+      && arg_lookup (&str, riscv_vsew, ARRAY_SIZE (riscv_vsew), &vsew_value))
     {
       if (*str == ',')
 	++str;
@@ -2680,7 +2711,8 @@ my_getVsetvliExpression (expressionS *ep, char *str)
       ep->X_add_number = (vlmul_value << OP_SH_VLMUL)
 			 | (vsew_value << OP_SH_VSEW)
 			 | (vta_value << OP_SH_VTA)
-			 | (vma_value << OP_SH_VMA);
+			 | (vma_value << OP_SH_VMA)
+			 | altfmt_value;
       expr_parse_end = str;
     }
   else
