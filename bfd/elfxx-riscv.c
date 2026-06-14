@@ -1214,6 +1214,7 @@ static const struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"i", "+zicsr,+zifencei", check_implicit_for_i},
   {"zicntr", "+zicsr", check_implicit_always},
   {"zihpm", "+zicsr", check_implicit_always},
+  {"ziccid", "+ziccif", check_implicit_always},
 
   {"m", "+zmmul", check_implicit_always},
 
@@ -1458,6 +1459,7 @@ static const struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zibi",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zic64b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccamoa",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"ziccid",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccif",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zicclsm",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccrse",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
