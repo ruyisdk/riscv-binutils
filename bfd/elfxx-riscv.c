@@ -1472,6 +1472,7 @@ static const struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zibi",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zic64b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccamoa",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"ziccamoc",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccid",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ziccif",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zicclsm",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
