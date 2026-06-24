@@ -2305,6 +2305,8 @@ const struct riscv_opcode riscv_opcodes[] =
 {"vabs.v",       0, INSN_CLASS_ZVABD, "Vd,VtVm",    MATCH_VABS_V,     MASK_VABS_V,     match_opcode, 0},
 {"vabd.vv",      0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VABD_VV,    MASK_VABD_VV,    match_opcode, 0},
 {"vabdu.vv",     0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VABDU_VV,   MASK_VABDU_VV,   match_opcode, 0},
+{"vwabdacc.vv",  0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VWABDA_VV,  MASK_VWABDA_VV,  match_opcode, 0},
+{"vwabdaccu.vv", 0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VWABDAU_VV, MASK_VWABDAU_VV, match_opcode, 0},
 {"vwabda.vv",    0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VWABDA_VV,  MASK_VWABDA_VV,  match_opcode, 0},
 {"vwabdau.vv",   0, INSN_CLASS_ZVABD, "Vd,Vt,VsVm", MATCH_VWABDAU_VV, MASK_VWABDAU_VV, match_opcode, 0},
 
