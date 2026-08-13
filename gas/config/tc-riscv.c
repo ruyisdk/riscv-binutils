@@ -1689,6 +1689,30 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 		  goto unknown_validate_operand;
 		}
 	      break;
+		/* SIMD exntension insns.  */
+		case 'p':
+	    switch (*++oparg)
+		{
+		/* shift amount, 0 - 7.  */
+		case 'B': USE_BITS (OP_MASK_SHAMTB, OP_SH_SHAMTB); break;
+		/* shift amount, 0 - 15.  */
+		case 'H': USE_BITS (OP_MASK_SHAMTH, OP_SH_SHAMTH); break;
+		/* Signed saturation width encoded as width - 1.  */
+		case '4': USE_BITS (OP_MASK_SHAMTH, OP_SH_SHAMTH); break;
+		case '5': USE_BITS (OP_MASK_SHAMTW, OP_SH_SHAMTW); break;
+		case '6': USE_BITS (OP_MASK_SHAMT, OP_SH_SHAMT); break;
+		/* load word imm.  */
+		case 'I': used_bits |= ENCODE_PLI_IMM (-1U); break;
+		/* load byte imm.  */
+		case 'b': used_bits |= ENCODE_PLI_B_IMM (-1U); break;
+		/* load half word unsigned imm.  */
+		case 'h': used_bits |= ENCODE_PLUI_H_IMM (-1U); break;
+		/* load word unsigned imm.  */
+		case 'u': used_bits |= ENCODE_PLUI_IMM (-1U); break;
+		default:
+		  goto unknown_validate_operand;
+		}
+	      break;
 	    default:
 	      goto unknown_validate_operand;
 	    }
@@ -4061,6 +4085,119 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 			}
 		      ip->insn_opcode |= ENCODE_ZCMT_INDEX (imm_expr->X_add_number);
 		      goto rvc_imm_done;
+		    default:
+		      goto unknown_riscv_ip_operand;
+		    }
+		  break;
+
+		case 'p':
+		  switch (*++oparg)
+		    {
+		    case 'B': /* Immediate field for 'pslli.b'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      const uint64_t SHAMTB_MAX = 7;
+		      uint64_t shift_b = (uint64_t)imm_expr->X_add_number;
+		      if (shift_b > SHAMTB_MAX)
+				as_bad(_("Invalid shift amount for 'pslli.b' "
+				  "(should between 0-%"PRIu64")")
+				  , SHAMTB_MAX);
+		      INSERT_OPERAND (SHAMTB, *ip, imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
+		    case 'H': /* Immediate field for 'pslli.h'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      const uint64_t SHAMTH_MAX = 15;
+		      uint64_t shift_h = (uint64_t)imm_expr->X_add_number;
+		      if (shift_h > SHAMTH_MAX)
+				as_bad(_("Invalid shift amount. (should between 0-%"PRIu64")")
+				  , SHAMTH_MAX);
+		      INSERT_OPERAND (SHAMTH, *ip, imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
+		    case '4': /* Signed saturation width, encoded in 4 bits.  */
+		    case '5': /* Signed saturation width, encoded in 5 bits.  */
+		    case '6': /* Signed saturation width, encoded in 6 bits.  */
+		      {
+			unsigned int width_bits = *oparg - '0';
+			unsigned int max_width = 1U << width_bits;
+
+			my_getExpression (imm_expr, asarg, force_reloc);
+			check_absolute_expr (ip, imm_expr, false);
+			if (imm_expr->X_add_number < 1
+			    || imm_expr->X_add_number > max_width)
+			  as_bad (_("saturation width must be in the range "
+				    "1..%u"), max_width);
+
+			switch (width_bits)
+			  {
+			  case 4:
+			    INSERT_OPERAND (SHAMTH, *ip,
+					    imm_expr->X_add_number - 1);
+			    break;
+			  case 5:
+			    INSERT_OPERAND (SHAMTW, *ip,
+					    imm_expr->X_add_number - 1);
+			    break;
+			  case 6:
+			    INSERT_OPERAND (SHAMT, *ip,
+					   imm_expr->X_add_number - 1);
+			    break;
+			  }
+
+			imm_expr->X_op = O_absent;
+			asarg = expr_parse_end;
+			continue;
+		      }
+		    case 'b': /* Immediate field for 'pli.b'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      if (imm_expr->X_add_number < -128
+			  || imm_expr->X_add_number > 255)
+				as_bad (_("bad value for imm field, "
+				  "value must be represented in 8 bit"));
+		      ip->insn_opcode |= ENCODE_PLI_B_IMM (imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
+		    case 'I': /* Immediate field for 'pli.h/w'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      if (imm_expr->X_add_number < -512
+			  || imm_expr->X_add_number > 511)
+				as_bad (_("bad value for imm field, "
+				  "value must be -512..511"));
+		      ip->insn_opcode |= ENCODE_PLI_IMM (imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
+		    case 'h': /* Immediate field for 'plui.h'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      if (imm_expr->X_add_number < -512
+			  || imm_expr->X_add_number > 511)
+				as_bad (_("bad value for imm field, "
+				"value must be -512..511"));
+			  imm_expr->X_add_number <<= RISCV_PIMM_H_BITS;
+		      ip->insn_opcode |= ENCODE_PLUI_H_IMM (imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
+		    case 'u': /* Immediate field for 'plui.w'.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      if (imm_expr->X_add_number < -512
+			  || imm_expr->X_add_number > 511)
+				as_bad (_("bad value for imm field, "
+				"value must be -512..511"));
+			  imm_expr->X_add_number <<= RISCV_PIMM_BITS;
+		      ip->insn_opcode |= ENCODE_PLUI_IMM (imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		    continue;
 		    default:
 		      goto unknown_riscv_ip_operand;
 		    }

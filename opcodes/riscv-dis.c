@@ -789,6 +789,53 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		  goto undefined_modifier;
 		}
 	      break;
+	    case 'p': /* SIMD extension instruction fields. */
+	      switch (*++oparg)
+		{
+		case 'B':
+		  print (info->stream, dis_style_immediate, "0x%x",
+			(unsigned)EXTRACT_OPERAND (SHAMTB, l));
+		  break;
+		case 'H':
+		  print (info->stream, dis_style_immediate, "0x%x",
+			(unsigned)EXTRACT_OPERAND (SHAMTH, l));
+		  break;
+		case '4':
+		case '5':
+		case '6':
+		  {
+		    unsigned int width;
+
+		    if (*oparg == '4')
+		      width = EXTRACT_OPERAND (SHAMTH, l) + 1;
+		    else if (*oparg == '5')
+		      width = EXTRACT_OPERAND (SHAMTW, l) + 1;
+		    else
+		      width = EXTRACT_OPERAND (SHAMT, l) + 1;
+
+		    print (info->stream, dis_style_immediate, "%u", width);
+		    break;
+		  }
+		case 'b':
+		  print (info->stream, dis_style_immediate, "%i",
+			(int)EXTRACT_PLI_B_IMM (l));
+		  break;
+		case 'I':
+		  print (info->stream, dis_style_immediate, "%d",
+			(int)EXTRACT_PLI_IMM (l));
+		  break;
+		case 'h':
+		  print (info->stream, dis_style_immediate, "%d",
+			(int)EXTRACT_PLUI_H_IMM (l));
+		  break;
+		case 'u':
+		  print (info->stream, dis_style_immediate, "%d",
+			(int)EXTRACT_PLUI_IMM (l));
+		  break;
+		default:
+		  goto undefined_modifier;
+		}
+	      break;
 	    default:
 	      goto undefined_modifier;
 	    }
