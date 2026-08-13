@@ -1286,6 +1286,30 @@ reg_lookup (char **s, enum reg_class class, unsigned int *regnop)
   return reg >= 0;
 }
 
+/* Parse an even-numbered GPR and return its four-bit register-pair index.
+   Zilsd uses the same even-register assembly convention, but its standard
+   five-bit register field stores the physical register number directly.  P
+   double-wide encodings instead store the physical register number divided
+   by two.  */
+
+static bool
+reg_pair_lookup (char **s, unsigned int *regnop)
+{
+  char *start = *s;
+  unsigned int regno;
+
+  if (!reg_lookup (s, RCLASS_GPR, &regno))
+    return false;
+  if ((regno & 1) != 0)
+    {
+      *s = start;
+      return false;
+    }
+
+  *regnop = regno >> 1;
+  return true;
+}
+
 static bool
 arg_lookup (char **s, const char *const *array, size_t size, unsigned *regnop)
 {
@@ -1697,6 +1721,8 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 		case 'B': USE_BITS (OP_MASK_SHAMTB, OP_SH_SHAMTB); break;
 		/* shift amount, 0 - 15.  */
 		case 'H': USE_BITS (OP_MASK_SHAMTH, OP_SH_SHAMTH); break;
+		/* shift amount for an RV32 register pair, 0 - 63.  */
+		case 'W': USE_BITS (OP_MASK_SHAMT, OP_SH_SHAMT); break;
 		/* Signed saturation width encoded as width - 1.  */
 		case '4': USE_BITS (OP_MASK_SHAMTH, OP_SH_SHAMTH); break;
 		case '5': USE_BITS (OP_MASK_SHAMTW, OP_SH_SHAMTW); break;
@@ -1709,6 +1735,9 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 		case 'h': used_bits |= ENCODE_PLUI_H_IMM (-1U); break;
 		/* load word unsigned imm.  */
 		case 'u': used_bits |= ENCODE_PLUI_IMM (-1U); break;
+		case 'd': USE_BITS (OP_MASK_RDP, OP_SH_RDP); break;
+		case 's': USE_BITS (OP_MASK_RS1P, OP_SH_RS1P); break;
+		case 't': USE_BITS (OP_MASK_RS2P, OP_SH_RS2P); break;
 		default:
 		  goto unknown_validate_operand;
 		}
@@ -4118,6 +4147,15 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      imm_expr->X_op = O_absent;
 		      asarg = expr_parse_end;
 		    continue;
+		    case 'W': /* Shift amount for an RV32 register pair.  */
+		      my_getExpression (imm_expr, asarg, force_reloc);
+		      check_absolute_expr (ip, imm_expr, false);
+		      if ((uint64_t) imm_expr->X_add_number > OP_MASK_SHAMT)
+			as_bad (_("shift amount must be in the range 0..63"));
+		      INSERT_OPERAND (SHAMT, *ip, imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		      continue;
 		    case '4': /* Signed saturation width, encoded in 4 bits.  */
 		    case '5': /* Signed saturation width, encoded in 5 bits.  */
 		    case '6': /* Signed saturation width, encoded in 6 bits.  */
@@ -4198,6 +4236,30 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      imm_expr->X_op = O_absent;
 		      asarg = expr_parse_end;
 		    continue;
+		    case 'd': /* Pair destination register.  */
+		    case 's': /* Pair source register.  */
+		    case 't': /* Pair second source register.  */
+		      if (reg_pair_lookup (&asarg, &regno))
+			{
+			  char c = *oparg;
+
+			  if (is_whitespace (*asarg))
+			    ++asarg;
+			  switch (c)
+			    {
+			    case 's':
+			      INSERT_OPERAND (RS1P, *ip, regno);
+			      break;
+			    case 'd':
+			      INSERT_OPERAND (RDP, *ip, regno);
+			      break;
+			    case 't':
+			      INSERT_OPERAND (RS2P, *ip, regno);
+			      break;
+			    }
+			  continue;
+			}
+		      break;
 		    default:
 		      goto unknown_riscv_ip_operand;
 		    }
