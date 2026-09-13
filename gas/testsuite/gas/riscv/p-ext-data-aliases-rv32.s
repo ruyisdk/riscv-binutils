@@ -1,0 +1,33 @@
+	.text
+target:
+	mvd	a0,a4
+	pmv.bs	a0,a3
+	pneg.b	a0,a3
+	pabs.b	a0,a1
+	pmv.hs	a0,a3
+	pneg.h	a0,a3
+	pabs.h	a0,a1
+	pmv.dbs	a0,a3
+	pneg.db	a0,a4
+	pabs.db	a0,a2
+	pmv.dhs	a0,a3
+	pneg.dh	a0,a4
+	pabs.dh	a0,a2
+	pmv.dws	a0,a3
+	pneg.dw	a0,a4
+	pzext.h.b	a0,a1
+	pzext.w.h	a0,a1
+	pzext.dh.b	a0,a2
+	pzext.dw.h	a0,a2
+	negd	a0,a4
+	pwcvt.b	a0,a1
+	pwcvtu.b	a0,a1
+	pwcvth.b	a0,a3
+	pncvt.b	a0,a2
+	pncvth.b	a0,a2
+	pwcvt.h	a0,a1
+	pwcvtu.h	a0,a1
+	pwcvth.h	a0,a3
+	pncvt.h	a0,a2
+	pncvth.h	a0,a2
+	ppaire.h	a0,a1,a3

@@ -1,0 +1,19 @@
+target:
+	pmseqz.b	a0,a2
+	pmsgt.b	a0,a2,a4
+	pmsltz.b	a0,a2
+	pmsgtz.b	a0,a2
+	pmsgtu.b	a0,a2,a4
+	pmsnez.b	a0,a2
+	pmseqz.h	a0,a2
+	pmsgt.h	a0,a2,a4
+	pmsltz.h	a0,a2
+	pmsgtz.h	a0,a2
+	pmsgtu.h	a0,a2,a4
+	pmsnez.h	a0,a2
+	pmseqz.w	a0,a2
+	pmsgt.w	a0,a2,a4
+	pmsltz.w	a0,a2
+	pmsgtz.w	a0,a2
+	pmsgtu.w	a0,a2,a4
+	pmsnez.w	a0,a2

@@ -1,0 +1,25 @@
+target:
+	psrli.db	a0,a2,0
+	psrli.db	a0,a2,7
+	psrli.dh	a0,a2,0
+	psrli.dh	a0,a2,15
+	psrli.dw	a0,a2,0
+	psrli.dw	a0,a2,31
+	psrai.db	a0,a2,0
+	psrai.db	a0,a2,7
+	psrai.dh	a0,a2,0
+	psrai.dh	a0,a2,15
+	psrai.dw	a0,a2,0
+	psrai.dw	a0,a2,31
+	psrari.dh	a0,a2,0
+	psrari.dh	a0,a2,15
+	psrari.dw	a0,a2,0
+	psrari.dw	a0,a2,31
+	ppaire.db	a0,a2,a4
+	ppaire.dh	a0,a2,a4
+	ppaireo.db	a0,a2,a4
+	ppaireo.dh	a0,a2,a4
+	ppairoe.db	a0,a2,a4
+	ppairoe.dh	a0,a2,a4
+	ppairo.db	a0,a2,a4
+	ppairo.dh	a0,a2,a4

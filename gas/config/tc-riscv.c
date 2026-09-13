@@ -73,6 +73,7 @@ enum riscv_csr_class
   CSR_CLASS_ZCMT,	/* zcmt only */
   CSR_CLASS_ZICFISS,	/* Zicfiss */
   CSR_CLASS_V,		/* rvv only */
+  CSR_CLASS_V_OR_P,	/* rvv or packed SIMD */
   CSR_CLASS_DEBUG,	/* debug CSR */
   CSR_CLASS_H,		/* hypervisor */
   CSR_CLASS_H_32,	/* hypervisor, rv32 only */
@@ -1092,6 +1093,10 @@ riscv_csr_address (const char *csr_name,
     case CSR_CLASS_ZICFISS:
       extension = "zicfiss";
       break;
+    case CSR_CLASS_V_OR_P:
+      if (riscv_subset_supports (&riscv_rps_as, "p"))
+	break;
+      /* Fall through.  */
     case CSR_CLASS_V:
       extension = "zve32x";
       break;
