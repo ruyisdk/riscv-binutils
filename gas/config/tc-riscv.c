@@ -71,6 +71,7 @@ enum riscv_csr_class
   CSR_CLASS_F,		/* f-ext only */
   CSR_CLASS_ZKR,	/* zkr only */
   CSR_CLASS_ZCMT,	/* zcmt only */
+  CSR_CLASS_ZTT,	/* AME/Ztt only */
   CSR_CLASS_ZICFISS,	/* Zicfiss */
   CSR_CLASS_V,		/* rvv only */
   CSR_CLASS_DEBUG,	/* debug CSR */
@@ -1094,6 +1095,9 @@ riscv_csr_address (const char *csr_name,
     case CSR_CLASS_ZCMT:
       extension = "zcmt";
       break;
+    case CSR_CLASS_ZTT:
+      extension = "ztt";
+      break;
     case CSR_CLASS_ZICFISS:
       extension = "zicfiss";
       break;
@@ -1197,6 +1201,12 @@ riscv_csr_address (const char *csr_name,
       as_bad (_("internal: bad RISC-V CSR class (0x%x)"), csr_class);
     }
 
+  /* Unlike the legacy CSR classes, Ztt names require explicit selection
+     of the draft extension even when CSR checking is disabled.  */
+  if (csr_class == CSR_CLASS_ZTT
+      && !riscv_subset_supports (&riscv_rps_as, "ztt"))
+    as_bad (_("invalid CSR `%s', needs `ztt' extension"), csr_name);
+
   if (riscv_opts.csr_check)
     {
       if (is_rv32_only && xlen != 32)
@@ -1204,7 +1214,8 @@ riscv_csr_address (const char *csr_name,
       if (is_h_required && !riscv_subset_supports (&riscv_rps_as, "h"))
 	as_warn (_("invalid CSR `%s', needs `h' extension"), csr_name);
 
-      if (extension != NULL
+      if (csr_class != CSR_CLASS_ZTT
+	  && extension != NULL
 	  && !riscv_subset_supports (&riscv_rps_as, extension))
 	as_warn (_("invalid CSR `%s', needs `%s' extension"),
 		 csr_name, extension);

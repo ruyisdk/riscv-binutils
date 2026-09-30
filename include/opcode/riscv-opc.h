@@ -4429,6 +4429,14 @@
 #define CSR_HPMCOUNTER29H 0xc9d
 #define CSR_HPMCOUNTER30H 0xc9e
 #define CSR_HPMCOUNTER31H 0xc9f
+/* Ztt draft CSRs.  These do not alias cycle/time/instret.  */
+#define CSR_AMESTATUS 0x800
+#define CSR_AMENLEN 0xcc0
+#define CSR_AMEUDSZ 0xcc1
+#define CSR_AMEOWN 0xcc3
+/* The draft also assigns writable amestype, amefflags, and amexsat to
+   0xcc2, 0xcc4, and 0xcc5, but those addresses encode read-only CSRs.  Do
+   not expose their names until the draft resolves that conflict.  */
 /* Privileged Supervisor CSR addresses.  */
 #define CSR_SSTATUS 0x100
 #define CSR_SIE 0x104
@@ -6192,6 +6200,11 @@ DECLARE_CSR(mscontext, CSR_MSCONTEXT, CSR_CLASS_DEBUG, PRIV_SPEC_CLASS_NONE, PRI
 DECLARE_CSR(seed, CSR_SEED, CSR_CLASS_ZKR, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 /* Unprivileged Zcmt CSRs.  */
 DECLARE_CSR(jvt, CSR_JVT, CSR_CLASS_ZCMT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+/* Ztt draft CSRs.  */
+DECLARE_CSR(amestatus, CSR_AMESTATUS, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+DECLARE_CSR(amenlen, CSR_AMENLEN, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+DECLARE_CSR(ameudsz, CSR_AMEUDSZ, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+DECLARE_CSR(ameown, CSR_AMEOWN, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 /* Unprivileged Vector CSRs.  */
 DECLARE_CSR(vstart, CSR_VSTART, CSR_CLASS_V, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 DECLARE_CSR(vxsat, CSR_VXSAT, CSR_CLASS_V, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
