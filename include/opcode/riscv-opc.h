@@ -4434,9 +4434,13 @@
 #define CSR_AMENLEN 0xcc0
 #define CSR_AMEUDSZ 0xcc1
 #define CSR_AMEOWN 0xcc3
-/* The draft also assigns writable amestype, amefflags, and amexsat to
-   0xcc2, 0xcc4, and 0xcc5, but those addresses encode read-only CSRs.  Do
-   not expose their names until the draft resolves that conflict.  */
+/* Local provisional writable CSR mapping, not official allocations.
+   The draft's 0xcc2/0xcc4/0xcc5 are read-only encodings; use the
+   agreed 0x810/0x811/0x812 mapping only with matching hardware.
+   Do not add aliases at the original read-only addresses.  */
+#define CSR_AMESTYPE 0x810
+#define CSR_AMEFFLAGS 0x811
+#define CSR_AMEXSAT 0x812
 /* Privileged Supervisor CSR addresses.  */
 #define CSR_SSTATUS 0x100
 #define CSR_SIE 0x104
@@ -6205,6 +6209,10 @@ DECLARE_CSR(amestatus, CSR_AMESTATUS, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_
 DECLARE_CSR(amenlen, CSR_AMENLEN, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 DECLARE_CSR(ameudsz, CSR_AMEUDSZ, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 DECLARE_CSR(ameown, CSR_AMEOWN, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+/* Local provisional mappings; see CSR_AMESTYPE above.  */
+DECLARE_CSR(amestype, CSR_AMESTYPE, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+DECLARE_CSR(amefflags, CSR_AMEFFLAGS, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
+DECLARE_CSR(amexsat, CSR_AMEXSAT, CSR_CLASS_ZTT, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 /* Unprivileged Vector CSRs.  */
 DECLARE_CSR(vstart, CSR_VSTART, CSR_CLASS_V, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)
 DECLARE_CSR(vxsat, CSR_VXSAT, CSR_CLASS_V, PRIV_SPEC_CLASS_NONE, PRIV_SPEC_CLASS_NONE)

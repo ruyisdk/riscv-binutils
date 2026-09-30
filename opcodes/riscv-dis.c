@@ -706,7 +706,10 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	    if ((csr == CSR_AMESTATUS
 		 || csr == CSR_AMENLEN
 		 || csr == CSR_AMEUDSZ
-		 || csr == CSR_AMEOWN)
+		 || csr == CSR_AMEOWN
+		 || csr == CSR_AMESTYPE
+		 || csr == CSR_AMEFFLAGS
+		 || csr == CSR_AMEXSAT)
 		&& !riscv_subset_supports (&pd->riscv_rps_dis, "ztt"))
 	      print (info->stream, dis_style_immediate, "0x%x", csr);
 	    else if (riscv_csr_hash[csr] != NULL)

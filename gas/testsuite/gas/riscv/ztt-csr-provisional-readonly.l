@@ -1,0 +1,10 @@
+.*Assembler messages:
+.*: Warning: read-only CSR is written `csrw 0xcc2,zero'
+.*: Warning: read-only CSR is written `csrw 0xcc4,zero'
+.*: Warning: read-only CSR is written `csrw 0xcc5,zero'
+.*: Warning: read-only CSR is written `csrw cycle,zero'
+.*: Warning: read-only CSR is written `csrw time,zero'
+.*: Warning: read-only CSR is written `csrw instret,zero'
+.*: Warning: read-only CSR is written `csrw amenlen,zero'
+.*: Warning: read-only CSR is written `csrw ameudsz,zero'
+.*: Warning: read-only CSR is written `csrw ameown,zero'
