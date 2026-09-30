@@ -975,6 +975,8 @@ enum reg_class
   RCLASS_FPR,
   RCLASS_VECR,
   RCLASS_VECM,
+  RCLASS_MREG,
+  RCLASS_ACC,
   RCLASS_MAX,
 
   RCLASS_CSR
@@ -1679,6 +1681,18 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 		  goto unknown_validate_operand;
 		}
 	      break;
+	    case 'm':
+	      switch (*++oparg)
+		{
+		case 'd': USE_BITS (OP_MASK_AME_MRD, OP_SH_AME_MRD); break;
+		case 's': USE_BITS (OP_MASK_AME_MRS1, OP_SH_AME_MRS1); break;
+		case 't': USE_BITS (OP_MASK_AME_MRS2, OP_SH_AME_MRS2); break;
+		case 'a': USE_BITS (OP_MASK_AME_ACCRD, OP_SH_AME_ACCRD); break;
+		case 'b': USE_BITS (OP_MASK_AME_ACCRS1, OP_SH_AME_ACCRS1); break;
+		default:
+		  goto unknown_validate_operand;
+		}
+	      break;
 	    case 'c':
 	      switch (*++oparg)
 		{
@@ -1994,6 +2008,8 @@ md_begin (void)
   hash_reg_names (RCLASS_FPR, riscv_fpr_names_abi, NFPR);
   hash_reg_names (RCLASS_VECR, riscv_vecr_names_numeric, NVECR);
   hash_reg_names (RCLASS_VECM, riscv_vecm_names_numeric, NVECM);
+  hash_reg_names (RCLASS_MREG, riscv_ame_mreg_names_numeric, NMREG);
+  hash_reg_names (RCLASS_ACC, riscv_ame_acc_names_numeric, NACCREG);
   /* Add "fp" as an alias for "s0".  */
   hash_reg_name (RCLASS_GPR, "fp", 8);
 
@@ -4009,6 +4025,39 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 			    }
 			}
 		      INSERT_OPERAND (RS1, *ip, regno);
+		      continue;
+		    default:
+		      goto unknown_riscv_ip_operand;
+		    }
+		  break;
+
+		case 'm':
+		  switch (*++oparg)
+		    {
+		    case 'd':
+		      if (!reg_lookup (&asarg, RCLASS_MREG, &regno))
+			break;
+		      INSERT_OPERAND (AME_MRD, *ip, regno);
+		      continue;
+		    case 's':
+		      if (!reg_lookup (&asarg, RCLASS_MREG, &regno))
+			break;
+		      INSERT_OPERAND (AME_MRS1, *ip, regno);
+		      continue;
+		    case 't':
+		      if (!reg_lookup (&asarg, RCLASS_MREG, &regno))
+			break;
+		      INSERT_OPERAND (AME_MRS2, *ip, regno);
+		      continue;
+		    case 'a':
+		      if (!reg_lookup (&asarg, RCLASS_ACC, &regno))
+			break;
+		      INSERT_OPERAND (AME_ACCRD, *ip, regno);
+		      continue;
+		    case 'b':
+		      if (!reg_lookup (&asarg, RCLASS_ACC, &regno))
+			break;
+		      INSERT_OPERAND (AME_ACCRS1, *ip, regno);
 		      continue;
 		    default:
 		      goto unknown_riscv_ip_operand;

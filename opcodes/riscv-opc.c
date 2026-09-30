@@ -87,6 +87,25 @@ const char riscv_vecm_names_numeric[NVECM][NRC] =
   "v0.t"
 };
 
+/* Ztt register names; no ABI aliases.  */
+const char riscv_ame_mreg_names_numeric[NMREG][NRC] =
+{
+  "m0",   "m1",   "m2",   "m3",   "m4",   "m5",   "m6",   "m7",
+  "m8",   "m9",   "m10",  "m11",  "m12",  "m13",  "m14",  "m15",
+  "m16",  "m17",  "m18",  "m19",  "m20",  "m21",  "m22",  "m23",
+  "m24",  "m25",  "m26",  "m27",  "m28",  "m29",  "m30",  "m31"
+};
+
+/* Slots 16-31 are reserved by Ztt v0.6.  Keep printable names for all
+   encoded values, but GAS only hashes acc0-acc15 as valid registers.  */
+const char riscv_ame_acc_names_numeric[NACCENC][NRC] =
+{
+  "acc0",  "acc1",  "acc2",  "acc3",  "acc4",  "acc5",  "acc6",  "acc7",
+  "acc8",  "acc9",  "acc10", "acc11", "acc12", "acc13", "acc14", "acc15",
+  "acc16", "acc17", "acc18", "acc19", "acc20", "acc21", "acc22", "acc23",
+  "acc24", "acc25", "acc26", "acc27", "acc28", "acc29", "acc30", "acc31"
+};
+
 /* The vsetvli vsew constants.  */
 const char * const riscv_vsew[8] =
 {

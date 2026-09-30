@@ -759,6 +759,36 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		  goto undefined_modifier;
 		}
 	      break;
+	    case 'm':
+	      switch (*++oparg)
+		{
+		case 'd':
+		  print (info->stream, dis_style_register, "%s",
+			 riscv_ame_mreg_names_numeric[EXTRACT_OPERAND (AME_MRD, l)]);
+		  break;
+		case 's':
+		  print (info->stream, dis_style_register, "%s",
+			 riscv_ame_mreg_names_numeric[EXTRACT_OPERAND (AME_MRS1, l)]);
+		  break;
+		case 't':
+		  print (info->stream, dis_style_register, "%s",
+			 riscv_ame_mreg_names_numeric[
+			   EXTRACT_OPERAND (AME_MRS2, l)]);
+		  break;
+		case 'a':
+		  print (info->stream, dis_style_register, "%s",
+			 riscv_ame_acc_names_numeric[
+			   EXTRACT_OPERAND (AME_ACCRD, l)]);
+		  break;
+		case 'b':
+		  print (info->stream, dis_style_register, "%s",
+			 riscv_ame_acc_names_numeric[
+			   EXTRACT_OPERAND (AME_ACCRS1, l)]);
+		  break;
+		default:
+		  goto undefined_modifier;
+		}
+	      break;
 	    case 'c': /* Zcb extension 16 bits length instruction fields. */
 	      switch (*++oparg)
 		{

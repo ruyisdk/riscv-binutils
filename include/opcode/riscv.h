@@ -400,8 +400,23 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 #define OP_MASK_SREG2		0x7
 #define OP_SH_SREG2		2
 
+/* Ztt register fields.  */
+#define OP_MASK_AME_MRD		0x1f
+#define OP_SH_AME_MRD		7
+#define OP_MASK_AME_MRS1	0x1f
+#define OP_SH_AME_MRS1		15
+#define OP_MASK_AME_MRS2	0x1f
+#define OP_SH_AME_MRS2		20
+#define OP_MASK_AME_ACCRD	0x1f
+#define OP_SH_AME_ACCRD		7
+#define OP_MASK_AME_ACCRS1	0x1f
+#define OP_SH_AME_ACCRS1	15
+
 #define NVECR 32
 #define NVECM 1
+#define NMREG 32
+#define NACCREG 16
+#define NACCENC 32
 
 /* SiFive fields.  */
 #define OP_MASK_XSO2            0x3
@@ -775,7 +790,7 @@ enum riscv_seg_mstate
   MAP_INSN,		/* Instructions.  */
 };
 
-#define NRC (4 + 1)     /* Max characters in register names, incl nul.  */
+#define NRC (5 + 1)     /* Max characters in register names, incl nul.  */
 
 extern const char riscv_gpr_names_numeric[NGPR][NRC];
 extern const char riscv_gpr_names_abi[NGPR][NRC];
@@ -785,6 +800,8 @@ extern const char * const riscv_rm[8];
 extern const char * const riscv_pred_succ[16];
 extern const char riscv_vecr_names_numeric[NVECR][NRC];
 extern const char riscv_vecm_names_numeric[NVECM][NRC];
+extern const char riscv_ame_mreg_names_numeric[NMREG][NRC];
+extern const char riscv_ame_acc_names_numeric[NACCENC][NRC];
 extern const char * const riscv_vsew[8];
 extern const char * const riscv_vsew_altfmt[2];
 extern const char * const riscv_vlmul[8];
