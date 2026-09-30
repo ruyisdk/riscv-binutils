@@ -1590,6 +1590,8 @@ static const struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zvl32768b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zvl65536b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ztso",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  /* Ztt does not imply V; its scalar operand forms are part of Ztt.  */
+  {"ztt",		ISA_SPEC_CLASS_DRAFT,		0, 6, 0 },
   {"zca",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zcb",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"zce",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
@@ -2269,6 +2271,17 @@ riscv_parse_check_conflicts (riscv_parse_subset_t *rps)
   riscv_subset_t *subset = NULL;
   int xlen = *rps->xlen;
   bool no_conflict = true;
+
+  /* Earlier Ztt drafts reuse encodings with different names, so do
+     not silently interpret them using the v0.6 opcode table.  */
+  if (riscv_lookup_subset (rps->subset_list, "ztt", &subset)
+      && (subset->major_version != 0 || subset->minor_version != 6))
+    {
+      rps->error_handler
+	(_("unsupported version %d.%d of the `ztt' extension; expected 0.6"),
+	 subset->major_version, subset->minor_version);
+      no_conflict = false;
+    }
 
   if (riscv_subset_supports (rps, "e")
       && riscv_subset_supports (rps, "h"))
@@ -3092,6 +3105,8 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "zcmp");
     case INSN_CLASS_ZCMT:
       return riscv_subset_supports (rps, "zcmt");
+    case INSN_CLASS_ZTT:
+      return riscv_subset_supports (rps, "ztt");
     case INSN_CLASS_SMCTR_OR_SSCTR:
       return (riscv_subset_supports (rps, "smctr")
 	      || riscv_subset_supports (rps, "ssctr"));
@@ -3455,6 +3470,8 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "zcmp";
     case INSN_CLASS_ZCMT:
       return "zcmt";
+    case INSN_CLASS_ZTT:
+      return _("ztt");
     case INSN_CLASS_SMCTR_OR_SSCTR:
       return _("smctr' or `ssctr");
     case INSN_CLASS_ZILSD:

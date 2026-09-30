@@ -114,6 +114,7 @@ All available -march extensions for RISC-V:
 	zvl32768b                               1.0
 	zvl65536b                               1.0
 	ztso                                    1.0
+	ztt                                     0.6
 	zca                                     1.0
 	zcb                                     1.0
 	zce                                     1.0
