@@ -2038,6 +2038,7 @@ riscv_parsing_subset_version (const char *p,
 			      int *major_version,
 			      int *minor_version)
 {
+  const char *version_start = p;
   bool major_p = true;
   int version = 0;
   char np;
@@ -2050,8 +2051,9 @@ riscv_parsing_subset_version (const char *p,
 	{
 	  np = *(p + 1);
 
-	  /* Might be beginning of `p` extension.  */
-	  if (!ISDIGIT (np))
+	  /* A separator requires a preceding major version and can only
+	     occur once.  Otherwise this starts the P extension.  */
+	  if (p == version_start || !major_p || !ISDIGIT (np))
 	    break;
 
 	  *major_version = version;
